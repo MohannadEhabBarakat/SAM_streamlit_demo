@@ -1,6 +1,6 @@
 requests
 streamlit
-streamlit-drawable-canvas==0.8.0
+streamlit-drawable-canvas
 numpy
 matplotlib
 opencv-python-headless
