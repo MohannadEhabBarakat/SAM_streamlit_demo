@@ -3,7 +3,7 @@ streamlit
 streamlit-drawable-canvas==0.8.0
 numpy
 matplotlib
-opencv-python
+opencv-python-headless
 pandas
 Pillow
 torch
