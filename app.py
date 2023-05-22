@@ -62,7 +62,7 @@ def run_sam_remote(objects, img, url, use_mask):
   return data['image']
 
 
-def save_data_remote(objects, img, dataset_name, url, use_mask=False):
+def save_data_remote(objects, img, dataset_name, url, dino_arch, use_mask=False):
   headers = {
   'ngrok-skip-browser-warning': 'sdfsd',
   'Content-Type': 'application/json'
@@ -84,7 +84,8 @@ def save_data_remote(objects, img, dataset_name, url, use_mask=False):
   data = json.dumps({
       "objects": objects,
       "name": dataset_name,
-      "use_mask":use_mask
+      "use_mask": use_mask,
+      "dino_arch": dino_arch
   })
   requests.get(url=url+"/add_to_dataset", headers=headers, data=data)
 
@@ -212,11 +213,15 @@ if st.sidebar.button('Create Dataset'):
   else:
      st.info("Error")
 
+dino_arch = st.sidebar.selectbox(
+    "DINO Architecture:",
+    ("vit_base_16", "vit_small_16"),
+)
 
 data = None
 if st.sidebar.button('Save Data'):
   data = None
-  save_data_remote(objects, image, dataset_name, url)
+  save_data_remote(objects, image, dataset_name, url, dino_arch)
   st.info("All data saved successfully")
 
 if st.sidebar.button('Reset backend'):
