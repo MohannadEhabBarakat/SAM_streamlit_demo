@@ -93,9 +93,6 @@ def create_dataset(dataset_name, url):
   'Content-Type': 'application/json'
   }
 
-  buffered = BytesIO()
-  img.save(buffered, format="JPEG")
-  img_str = base64.b64encode(buffered.getvalue()) 
   data = json.dumps({
       "name": dataset_name
   })
