@@ -207,11 +207,14 @@ dataset_name = st.sidebar.text_input("Dataset Name")
 data = None
 if st.sidebar.button('Create Dataset'):
   data = None
-  data = create_dataset(dataset_name, url)
-  if data:
-    st.info("Dataset created")
+  if dataset_name == "":
+     st.info("Write the dataset name please")
   else:
-     st.info("Error")
+    data = create_dataset(dataset_name, url)
+    if data:
+      st.info("Dataset created")
+    else:
+      st.info("Error")
 
 dino_arch = st.sidebar.selectbox(
     "DINO Architecture:",
