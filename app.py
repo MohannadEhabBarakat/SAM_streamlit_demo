@@ -87,12 +87,22 @@ def save_data_remote(objects, img, url):
   requests.get(url=url+"/add_to_dataset", headers=headers, data=data)
 
 
-  
-  # extracting data in json format
-  # data = json.loads(r.content.decode())
+def create_dataset(dataset_name, url):
+  headers = {
+  'ngrok-skip-browser-warning': 'sdfsd',
+  'Content-Type': 'application/json'
+  }
 
-  # print(data)
-  # return data['image']
+  buffered = BytesIO()
+  img.save(buffered, format="JPEG")
+  img_str = base64.b64encode(buffered.getvalue()) 
+  data = json.dumps({
+      "name": dataset_name
+  })
+  r = requests.get(url=url+"/create_dataset", headers=headers, data=data)
+  data = json.loads(r.content.decode())
+  return data["done"]
+
 
 
 import pandas as pd
@@ -193,11 +203,23 @@ if data is not None:
   plt.axis('off')
   st.pyplot(fig)
 
+dataset_name = st.sidebar.text_input("Dataset Name")
+data = None
+if st.sidebar.button('Create Dataset'):
+  data = None
+  data = create_dataset(dataset_name, url)
+  if data:
+    st.info("Dataset created")
+  else:
+     st.info("Error")
+
+
 data = None
 if st.sidebar.button('Save Data'):
   data = None
-  save_data_remote(objects, image, url)
-  st.info("All data saved successfully")
+
+  # save_data_remote(objects, image, url)
+  # st.info("All data saved successfully")
 
 if st.sidebar.button('Reset backend'):
   reset(url)
