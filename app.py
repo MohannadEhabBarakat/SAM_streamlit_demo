@@ -62,7 +62,7 @@ def run_sam_remote(objects, img, url, use_mask):
   return data['image']
 
 
-def save_data_remote(objects, img, url):
+def save_data_remote(objects, img, dataset_name, url):
   headers = {
   'ngrok-skip-browser-warning': 'sdfsd',
   'Content-Type': 'application/json'
@@ -82,7 +82,8 @@ def save_data_remote(objects, img, url):
   objects = dumps(objects, indent=4)  
 
   data = json.dumps({
-      "objects":objects
+      "objects": objects,
+      "name": dataset_name
   })
   requests.get(url=url+"/add_to_dataset", headers=headers, data=data)
 
@@ -214,9 +215,8 @@ if st.sidebar.button('Create Dataset'):
 data = None
 if st.sidebar.button('Save Data'):
   data = None
-
-  # save_data_remote(objects, image, url)
-  # st.info("All data saved successfully")
+  save_data_remote(objects, image, dataset_name, url)
+  st.info("All data saved successfully")
 
 if st.sidebar.button('Reset backend'):
   reset(url)
