@@ -221,8 +221,11 @@ dino_arch = st.sidebar.selectbox(
 data = None
 if st.sidebar.button('Save Data'):
   data = None
-  save_data_remote(objects, image, dataset_name, url, dino_arch)
-  st.info("All data saved successfully")
+  if dataset_name == "":
+     st.info("Write the dataset name please")
+  else:
+    save_data_remote(objects, image, dataset_name, url, dino_arch)
+    st.info("All data saved successfully")
 
 if st.sidebar.button('Reset backend'):
   reset(url)
