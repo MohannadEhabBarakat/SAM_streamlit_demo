@@ -183,6 +183,7 @@ if st.sidebar.checkbox("Show image", False) and bg_image is not None:
       objects = pd.json_normalize(canvas_result.json_data["objects"])
       for col in objects.select_dtypes(include=["object"]).columns:
           objects[col] = objects[col].astype("str")
+      objects["annotation"] = [""] * len(objects)
       st.dataframe(objects)
       # st.write(str(type(objects)))
 
