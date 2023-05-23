@@ -81,7 +81,7 @@ def run_sam_remote(objects, img, url, use_mask):
   return data['image']
 
 
-def save_data_remote(objects, img, dataset_name, url, dino_arch, use_mask=False):
+def save_data_remote(objects, img, dataset_name, url, dino_arch, labels, use_mask=False):
   headers = {
   'ngrok-skip-browser-warning': 'sdfsd',
   'Content-Type': 'application/json'
@@ -104,7 +104,8 @@ def save_data_remote(objects, img, dataset_name, url, dino_arch, use_mask=False)
       "objects": objects,
       "name": dataset_name,
       "use_mask": use_mask,
-      "dino_arch": dino_arch
+      "dino_arch": dino_arch,
+      "labels": labels
   })
   requests.get(url=url+"/add_to_dataset", headers=headers, data=data)
 
@@ -132,6 +133,9 @@ import torch
 import torchvision
 import sys
 
+if "my_labels" not in st.session_state:
+    st.session_state.my_labels = []
+    
 # Specify canvas parameters in application
 url = st.sidebar.text_input("Enter URL:")
 
@@ -203,11 +207,13 @@ if st.sidebar.checkbox("Show image", False) and bg_image is not None:
       for col in objects.select_dtypes(include=["object"]).columns:
           objects[col] = objects[col].astype("str")
       st.dataframe(objects)
+
       # st.write(str(type(objects)))
 
 data = None
 if st.sidebar.button('Run SAM'):
   data = None
+  st.session_state.my_labels = []
   data = run_sam_remote(objects, image, url, use_mask)
 
 if data is not None:
@@ -217,8 +223,10 @@ if data is not None:
   open_cv_image = np.array(pil_image) 
   open_cv_image = open_cv_image.copy() 
   plt.imshow(open_cv_image)
-  for mask in masks:
+  for i, mask in enumerate(masks):
       show_mask(np.array(mask), plt.gca(), random_color=True)
+      a = np.where(np.array(mask) != 0)
+      plt.text(np.median(a[1]), np.median(a[0]), label, fontsize=22)
   plt.axis('off')
   st.pyplot(fig)
 
@@ -240,13 +248,23 @@ dino_arch = st.sidebar.selectbox(
     ("vit_base_16", "vit_small_16"),
 )
 
+label_user = st.sidebar.text_input("Enter Label")
+
+if st.sidebar.button('Submit Label'):
+  if label_user == "":
+     st.info("Write a label before submittion")
+  else:
+     st.session_state.my_labels.append(label_user)
+     st.dataframe(pd.DataFrame({"mask": [i for i in range(len(st.session_state.my_labels))], "label": st.session_state.my_labels}))
+
 data = None
 if st.sidebar.button('Save Data'):
   data = None
   if dataset_name == "":
      st.info("Write the dataset name please")
   else:
-    save_data_remote(objects, image, dataset_name, url, dino_arch)
+    save_data_remote(objects, image, dataset_name, url, dino_arch, st.session_state.my_labels)
+    st.session_state.my_labels = []
     st.info("All data saved successfully")
 
 
