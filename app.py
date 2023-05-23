@@ -311,6 +311,21 @@ data = None
 if st.sidebar.button('Pseudo Label with KNN'):
   data = None
   data = pseudo_label(image, url, dataset_name, "knn", dino_arch)
+  
+if data is not None:
+  masks = data[0]
+  labels = data[1]
+  fig = plt.figure(figsize=(10, 10))
+  pil_image = image#.convert('RGB') 
+  open_cv_image = np.array(pil_image) 
+  open_cv_image = open_cv_image.copy() 
+  plt.imshow(open_cv_image)
+  for mask, label in zip(masks, labels):
+      show_mask(np.array(mask), plt.gca(), random_color=True)
+      a = np.where(np.array(mask) != 0)
+      plt.text(np.median(a[1]), np.median(a[0]), label, fontsize=22)
+  plt.axis('off')
+  st.pyplot(fig)
 
 data = None
 if st.sidebar.button('Pseudo Label with LR'):
