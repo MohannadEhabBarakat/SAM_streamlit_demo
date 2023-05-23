@@ -226,7 +226,7 @@ if data is not None:
   for i, mask in enumerate(masks):
       show_mask(np.array(mask), plt.gca(), random_color=True)
       a = np.where(np.array(mask) != 0)
-      plt.text(np.median(a[1]), np.median(a[0]), str(i), fontsize=22)
+      plt.text(np.median(a[0]), np.median(a[1]), str(i), fontsize=22)
   plt.axis('off')
   st.pyplot(fig)
 
