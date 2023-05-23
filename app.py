@@ -256,6 +256,18 @@ if st.sidebar.button('Pseudo Label'):
   data = None
   data = pseudo_label(image, url, dataset_name, k_pseudo_label, dino_arch)[0]
 
+if data is not None:
+  masks = data
+  fig = plt.figure(figsize=(10, 10))
+  pil_image = image#.convert('RGB') 
+  open_cv_image = np.array(pil_image) 
+  open_cv_image = open_cv_image.copy() 
+  plt.imshow(open_cv_image)
+  for mask in masks:
+      show_mask(np.array(mask), plt.gca(), random_color=True)
+  plt.axis('off')
+  st.pyplot(fig)
+
 if st.sidebar.button('Reset backend'):
   reset(url)
 
