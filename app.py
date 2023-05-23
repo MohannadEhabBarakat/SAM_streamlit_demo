@@ -254,17 +254,20 @@ k_pseudo_label = st.sidebar.text_input("K")
 data = None
 if st.sidebar.button('Pseudo Label'):
   data = None
-  data = pseudo_label(image, url, dataset_name, k_pseudo_label, dino_arch)[0]
+  data = pseudo_label(image, url, dataset_name, k_pseudo_label, dino_arch)
 
 if data is not None:
-  masks = data
+  masks = data[0]
+  labels = data[1]
   fig = plt.figure(figsize=(10, 10))
   pil_image = image#.convert('RGB') 
   open_cv_image = np.array(pil_image) 
   open_cv_image = open_cv_image.copy() 
   plt.imshow(open_cv_image)
-  for mask in masks:
+  for mask, label in zip(masks, labels):
       show_mask(np.array(mask), plt.gca(), random_color=True)
+      a = np.where(np.array(mask) != 0)
+      plt.text(np.min(a[0]), np.min(a[1]), label)
   plt.axis('off')
   st.pyplot(fig)
 
