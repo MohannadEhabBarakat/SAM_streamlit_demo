@@ -136,8 +136,8 @@ def train_remote_model(dataset_name, model_type, url):
       "model": model_type
   })
   r = requests.get(url=url+"/train", headers=headers, data=data)
-  # data = json.loads(r.content.decode())
-  return "done"
+  data = json.loads(r.content.decode())
+  return data["score"]
 
 
 import pandas as pd
@@ -294,15 +294,15 @@ if st.sidebar.button('Train KNN'):
   if dataset_name == "":
      st.info("Write the dataset name please")
   else:
-    train_remote_model(dataset_name, "knn", url)
-    st.info("Training Done")
+    score = train_remote_model(dataset_name, "knn", url)
+    st.info(f"Training Done with training accuracy = {score}")
 
 if st.sidebar.button('Train LR'):
   if dataset_name == "":
     st.info("Write the dataset name please")
   else:
-    train_remote_model(dataset_name, "lr", url)
-    st.info("Training Done")
+    score = train_remote_model(dataset_name, "lr", url)
+    st.info(f"Training Done with training accuracy = {score}")
 
 st.sidebar.markdown("***")
 
