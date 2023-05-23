@@ -224,7 +224,8 @@ if data is not None:
   open_cv_image = open_cv_image.copy() 
   plt.imshow(open_cv_image)
   for i, mask in enumerate(masks):
-      a = np.where(np.array(mask) != 0)
+      h, w = mask.shape[-2:]
+      a = np.where(np.array(mask).reshape(h, w) != 0)
       plt.text(np.median(a[1]), np.median(a[0]), str(i), fontsize=22)
       show_mask(np.array(mask), plt.gca(), random_color=True)
   plt.axis('off')
