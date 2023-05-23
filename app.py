@@ -125,6 +125,20 @@ def create_dataset(dataset_name, url):
   return data["done"]
 
 
+def train_remote_model(dataset_name, model_type, url):
+  headers = {
+  'ngrok-skip-browser-warning': 'sdfsd',
+  'Content-Type': 'application/json'
+  }
+
+  data = json.dumps({
+      "name": dataset_name,
+      "model": model_type
+  })
+  r = requests.get(url=url+"/train", headers=headers, data=data)
+  # data = json.loads(r.content.decode())
+  return "done"
+
 
 import pandas as pd
 from PIL import Image
@@ -275,6 +289,22 @@ if st.sidebar.button('Save Data'):
     st.session_state.my_labels = []
     st.info("All data saved successfully")
 
+st.sidebar.markdown("***")
+if st.sidebar.button('Train KNN'):
+  if dataset_name == "":
+     st.info("Write the dataset name please")
+  else:
+    train_remote_model(dataset_name, "knn", url)
+    st.info("Training Done")
+
+if st.sidebar.button('Train LR'):
+  if dataset_name == "":
+    st.info("Write the dataset name please")
+  else:
+    train_remote_model(dataset_name, "lr", url)
+    st.info("Training Done")
+
+st.sidebar.markdown("***")
 
 k_pseudo_label = st.sidebar.text_input("K")
 data = None
