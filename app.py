@@ -231,8 +231,8 @@ if data is not None:
   plt.axis('off')
   st.pyplot(fig)
 
-st.text("")
-st.text("")
+st.markdown("***")
+st.markdown("***")
 
 dataset_name = st.sidebar.text_input("Dataset Name")
 data = None
@@ -247,8 +247,8 @@ if st.sidebar.button('Create Dataset'):
     else:
       st.info("Error")
 
-st.text("")
-st.text("")
+st.markdown("***")
+st.markdown("***")
 
 dino_arch = st.sidebar.selectbox(
     "DINO Architecture:",
@@ -296,8 +296,8 @@ if data is not None:
   plt.axis('off')
   st.pyplot(fig)
 
-st.text("")
-st.text("")
+st.markdown("***")
+st.markdown("***")
 if st.sidebar.button('Reset backend'):
   reset(url)
 
