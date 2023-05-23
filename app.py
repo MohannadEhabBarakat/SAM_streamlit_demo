@@ -227,7 +227,7 @@ if data is not None:
       show_mask(np.array(mask), plt.gca(), random_color=True)
       a = np.where(np.array(mask) != 0)
       plt.text(np.median(a[1]), np.median(a[0]), str(i), fontsize=22)
-  plt.axis('off')
+  plt.axis('on')
   st.pyplot(fig)
 
 dataset_name = st.sidebar.text_input("Dataset Name")
