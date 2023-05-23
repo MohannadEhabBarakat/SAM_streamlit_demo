@@ -105,7 +105,8 @@ def save_data_remote(objects, img, dataset_name, url, dino_arch, labels, use_mas
       "name": dataset_name,
       "use_mask": use_mask,
       "dino_arch": dino_arch,
-      "labels": labels
+      "labels": labels,
+      "image":img_str.decode()
   })
   requests.get(url=url+"/add_to_dataset", headers=headers, data=data)
 
