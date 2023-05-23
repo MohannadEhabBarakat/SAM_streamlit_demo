@@ -267,7 +267,7 @@ if data is not None:
   for mask, label in zip(masks, labels):
       show_mask(np.array(mask), plt.gca(), random_color=True)
       a = np.where(np.array(mask) != 0)
-      plt.text(np.min(a[0]), np.min(a[1]), label)
+      plt.text(np.min(a[0]), np.min(a[1]), label, fontsize=20)
   plt.axis('off')
   st.pyplot(fig)
 
