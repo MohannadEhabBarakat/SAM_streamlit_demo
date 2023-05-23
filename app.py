@@ -28,6 +28,25 @@ def resize_image(image):
 
   return image, new_w, new_h
 
+def pseudo_label(img, url, dataset_name, k, dino_arch):
+  headers = {
+  'ngrok-skip-browser-warning': 'sdfsd',
+  'Content-Type': 'application/json'
+  }
+
+  buffered = BytesIO()
+  img.save(buffered, format="JPEG")
+  img_str = base64.b64encode(buffered.getvalue()) 
+  data = json.dumps({
+      "image":img_str.decode(),
+      "name": dataset_name,
+      "k": k,
+      "dino_arch": dino_arch
+  })
+  r = requests.get(url=url+"/pseudo_label", headers=headers, data=data)
+  data = json.loads(r.content.decode())
+  return data["masks"], data["labels"]
+
 def run_sam_remote(objects, img, url, use_mask):
   headers = {
   'ngrok-skip-browser-warning': 'sdfsd',
@@ -229,6 +248,13 @@ if st.sidebar.button('Save Data'):
   else:
     save_data_remote(objects, image, dataset_name, url, dino_arch)
     st.info("All data saved successfully")
+
+
+k_pseudo_label = st.sidebar.text_input("K")
+data = None
+if st.sidebar.button('Pseudo Label'):
+  data = None
+  data = pseudo_label(image, url, dataset_name, k_pseudo_label, dino_arch)[0]
 
 if st.sidebar.button('Reset backend'):
   reset(url)
