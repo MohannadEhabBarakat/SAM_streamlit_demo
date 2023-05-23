@@ -28,7 +28,7 @@ def resize_image(image):
 
   return image, new_w, new_h
 
-def pseudo_label(img, url, dataset_name, k, dino_arch):
+def pseudo_label(img, url, dataset_name, model_type, dino_arch):
   headers = {
   'ngrok-skip-browser-warning': 'sdfsd',
   'Content-Type': 'application/json'
@@ -40,7 +40,7 @@ def pseudo_label(img, url, dataset_name, k, dino_arch):
   data = json.dumps({
       "image":img_str.decode(),
       "name": dataset_name,
-      "k": k,
+      "model": model_type,
       "dino_arch": dino_arch
   })
   r = requests.get(url=url+"/pseudo_label", headers=headers, data=data)
@@ -306,11 +306,16 @@ if st.sidebar.button('Train LR'):
 
 st.sidebar.markdown("***")
 
-k_pseudo_label = st.sidebar.text_input("K")
+#k_pseudo_label = st.sidebar.text_input("K")
 data = None
-if st.sidebar.button('Pseudo Label'):
+if st.sidebar.button('Pseudo Label with KNN'):
   data = None
-  data = pseudo_label(image, url, dataset_name, k_pseudo_label, dino_arch)
+  data = pseudo_label(image, url, dataset_name, "knn", dino_arch)
+
+data = None
+if st.sidebar.button('Pseudo Label with LR'):
+  data = None
+  data = pseudo_label(image, url, dataset_name, "lr", dino_arch)
 
 if data is not None:
   masks = data[0]
