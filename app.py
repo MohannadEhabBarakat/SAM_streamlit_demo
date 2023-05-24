@@ -231,7 +231,7 @@ data = None
 if st.sidebar.button('Run SAM'):
   data = None
   st.session_state.my_labels = []
-  data, mask, logits = run_sam_remote(objects, image, url, use_logits, use_mask)
+  data, bin_mask, logits = run_sam_remote(objects, image, url, use_logits, use_mask)
 
 if data is not None:
   masks = data
@@ -249,7 +249,7 @@ if data is not None:
   st.pyplot(fig)
  
   fig = plt.figure(figsize=(10, 10))
-  pil_image = mask
+  pil_image = bin_mask
   open_cv_image = np.array(pil_image).squeeze()
   open_cv_image = open_cv_image.copy() 
   plt.imshow(open_cv_image)
