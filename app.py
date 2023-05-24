@@ -47,7 +47,7 @@ def pseudo_label(img, url, dataset_name, model_type, dino_arch):
   data = json.loads(r.content.decode())
   return data["masks"], data["labels"]
 
-def run_sam_remote(objects, img, url, use_mask):
+def run_sam_remote(objects, img, url, use_logits, use_mask):
   headers = {
   'ngrok-skip-browser-warning': 'sdfsd',
   'Content-Type': 'application/json'
@@ -68,7 +68,8 @@ def run_sam_remote(objects, img, url, use_mask):
 
   data = json.dumps({
       "objects":objects,
-      "use_mask":use_mask
+      "use_mask":use_mask,
+      "use_logits":use_logits
   })
   r = requests.get(url=url+"/run_last_img", headers=headers, data=data)
 
@@ -78,7 +79,7 @@ def run_sam_remote(objects, img, url, use_mask):
   data = json.loads(r.content.decode())
 
   # print(data)
-  return data['image']
+  return data['image'], data['mask'], data['logits'] 
 
 
 def save_data_remote(objects, img, dataset_name, url, dino_arch, labels, use_mask=False):
@@ -165,7 +166,8 @@ stroke_color = st.sidebar.color_picker("Stroke color hex: ")
 bg_color = st.sidebar.color_picker("Background color hex: ", "#eee")
 bg_image = st.sidebar.file_uploader("Image:", type=["png", "jpg", "jpeg"])
 realtime_update = st.sidebar.checkbox("Update in realtime", True)
-use_mask = st.sidebar.checkbox("use last mask", True)
+use_mask = st.sidebar.checkbox("use last mask", False)
+use_logits = st.sidebar.checkbox("use last logits", False)
 
 def reset(url):
   headers = {
@@ -229,7 +231,7 @@ data = None
 if st.sidebar.button('Run SAM'):
   data = None
   st.session_state.my_labels = []
-  data = run_sam_remote(objects, image, url, use_mask)
+  data, mask, logits = run_sam_remote(objects, image, url, use_logits, use_mask)
 
 if data is not None:
   masks = data
@@ -245,7 +247,25 @@ if data is not None:
       show_mask(np.array(mask), plt.gca(), random_color=True)
   plt.axis('off')
   st.pyplot(fig)
+ 
+  fig = plt.figure(figsize=(10, 10))
+  pil_image = mask#.convert('RGB') 
+  open_cv_image = np.array(pil_image) 
+  open_cv_image = open_cv_image.copy() 
+  plt.imshow(open_cv_image)
+  plt.title("mask")
+  plt.axis('off')
+  st.pyplot(fig)
 
+  fig = plt.figure(figsize=(10, 10))
+  pil_image = logits#.convert('RGB') 
+  open_cv_image = np.array(pil_image) 
+  open_cv_image = open_cv_image.copy() 
+  plt.title("logits")
+  plt.imshow(open_cv_image)
+  plt.axis('off')
+  st.pyplot(fig)  
+  
 st.sidebar.markdown("***")
 
 
