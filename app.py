@@ -249,8 +249,8 @@ if data is not None:
   st.pyplot(fig)
  
   fig = plt.figure(figsize=(10, 10))
-  pil_image = mask#.convert('RGB') 
-  open_cv_image = np.array(pil_image) 
+  pil_image = mask
+  open_cv_image = np.array(pil_image).squeeze()
   open_cv_image = open_cv_image.copy() 
   plt.imshow(open_cv_image)
   plt.title("mask")
@@ -258,8 +258,8 @@ if data is not None:
   st.pyplot(fig)
 
   fig = plt.figure(figsize=(10, 10))
-  pil_image = logits#.convert('RGB') 
-  open_cv_image = np.array(pil_image) 
+  pil_image = logits
+  open_cv_image = np.array(pil_image).squeeze() 
   open_cv_image = open_cv_image.copy() 
   plt.title("logits")
   plt.imshow(open_cv_image)
